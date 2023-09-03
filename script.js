@@ -6,25 +6,26 @@ const Gameboard = (() => {
         ['*', '*', '*']
     ];
 
-    //print the board in the console
-    // const printBoard = () => {
-    //     for (let i=0; i < gameBoard.length; i++) {
-    //         console.log(gameBoard[i].join(' | '))
-    //         if (i < 2) {
-    //             console.log('------------')
-    //         }
-    //     }
-    // }
+
     //display the board in the DOM
     const boardContainer = document.querySelector('#gameboard')
     const displayBoard = () => {
         for (let i = 0; i < gameBoard.length; i++) {
             for (let j = 0; j < 3; j++) {
                 let newCell = document.createElement('div')
+                newCell.dataset.row = [i];
+                newCell.dataset.column = [j];
                 newCell.textContent = gameBoard[i][j];
                 boardContainer.appendChild(newCell)
             }
         }
+    }
+
+    //Update cell
+    const updateCell = (row, column, marker) => {
+        gameBoard[row][column] = marker;
+        const cellToUpdate = boardContainer.querySelector(`[data-row="${row}"][data-column="${column}"]`);
+        cellToUpdate.textContent = marker;
     }
 
     // Function to execute when the page loads
@@ -35,8 +36,7 @@ const Gameboard = (() => {
     document.addEventListener('DOMContentLoaded', init);
 
     
-    return {gameBoard, printBoard, displayBoard};
-    //Gameboard.printBoard() to print the board
+    return {gameBoard, displayBoard, updateCell};
 })()
 
 
@@ -46,10 +46,12 @@ const Player = (marker, name) => {
         name: name,
         marker: marker
     };
+    
     //mark the board with the chosen mark
     const mark = (row, column) => {
-        //console.log(Gameboard.gameBoard[row][column])
-        Gameboard.gameBoard[row][column] = playerData.marker;
+        if (Gameboard.gameBoard[row][column] === '*') {
+            Gameboard.updateCell(row, column, playerData.marker);
+        }
     }
     
     return {
@@ -66,23 +68,27 @@ const Gameflow = (() => {
     const playerO = Player('O');
     let activePlayer = playerX;
     let round = 0;
-    console.log(round);
+    const boardContainer = document.querySelector('#gameboard');
 
-    const gameLoop = (row, column) => {       
-    
+    const gameLoop = (event) => {       
+        
+        const cell = event.target;
+        const row = cell.dataset.row;
+        const column = cell.dataset.column;
+
         activePlayer.mark(row, column);
-        Gameboard.printBoard()
+        //check for victory and announce victor else go next round
         if (Gameflow.winCondition()) {
-            console.log(activePlayer.getMarker() + ' wins')
+            alert(activePlayer.getMarker() + ' wins')
         } else if (!Gameflow.winCondition() && round === 8) {
-            console.log('Tie')
+            alert('Tie');
         }
         activePlayer = activePlayer === 
         playerX ? playerO : playerX;
         console.log(activePlayer.getMarker());
         round++;
-        console.log(round);
     }
+
     const winCondition = () => {
     // Check rows
     for (let i = 0; i < 3; i++) {
@@ -123,7 +129,9 @@ const Gameflow = (() => {
         return true;
     }
 
+    
     return false;
-};
+    };
+    boardContainer.addEventListener('click', gameLoop);
     return {gameLoop, winCondition};
 })();

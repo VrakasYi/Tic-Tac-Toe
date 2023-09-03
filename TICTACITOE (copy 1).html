@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tic-Tac-Toe</title>
+    <style>
+        /* Add your CSS styles here */
+        #gameboard {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 1px solid #000;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameboard"></div>
+
+    <script>
+const Gameboard = (() => {
+    // Display the board in the DOM
+    const boardContainer = document.querySelector('#gameboard');
+    const displayBoard = () => {
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                let newCell = document.createElement('div');
+                newCell.classList.add('cell');
+                newCell.dataset.row = i;
+                newCell.dataset.column = j;
+                newCell.textContent = '';
+                boardContainer.appendChild(newCell);
+            }
+        }
+    };
+
+    // Update cell
+    const updateCell = (row, column, marker) => {
+        const cellToUpdate = boardContainer.querySelector(`[data-row="${row}"][data-column="${column}"]`);
+        cellToUpdate.textContent = marker;
+    };
+
+    return { displayBoard, updateCell };
+})();
+
+const Player = (marker, name) => {
+    // This is the mark of the player (X/O)
+    let playerData = {
+        name: name,
+        marker: marker
+    };
+
+    // Mark the board with the chosen mark
+    const mark = (row, column) => {
+        const cellValue = Gameboard.getCell(row, column);
+        if (cellValue === '') {
+            Gameboard.updateCell(row, column, playerData.marker);
+        }
+    };
+
+    return {
+        getMarker: () => playerData.marker,
+        mark
+    };
+};
+
+const Gameflow = (() => {
+    const playerX = Player('X');
+    const playerO = Player('O');
+    let activePlayer = playerX;
+    let round = 0;
+
+    const boardContainer = document.querySelector('#gameboard');
+
+    const gameLoop = (event) => {
+        const cell = event.target;
+        const row = cell.dataset.row;
+        const column = cell.dataset.column;
+
+        activePlayer.mark(row, column);
+
+        // Check for victory and announce victor else go to the next round
+        if (Gameflow.winCondition()) {
+            alert(activePlayer.getMarker() + ' wins');
+        } else if (!Gameflow.winCondition() && round === 8) {
+            alert('Tie');
+        }
+
+        activePlayer = activePlayer === playerX ? playerO : playerX;
+        round++;
+    };
+
+    const winCondition = () => {
+        // Check rows, columns, and diagonals for a win condition
+        // (You can use your existing winCondition logic here)
+        // ...
+
+        return false;
+    };
+
+    // Add click event listener to each cell
+    boardContainer.addEventListener('click', gameLoop);
+
+    return { winCondition };
+})();
+
+// Initialize the game board
+Gameboard.displayBoard();
+
+    </script>
+</body>
+</html>
