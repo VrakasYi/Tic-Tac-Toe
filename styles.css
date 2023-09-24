@@ -17,6 +17,7 @@ body{
     box-sizing: border-box;
     padding: 50px;
     gap: 5px;
+    font-size: 55px;
 }
 #gameboard > div {
     background-color: antiquewhite;
@@ -25,4 +26,26 @@ body{
     align-items: center;
     border: 1px solid #000;
     cursor: pointer;
+}
+button {
+    background-color: rgb(95, 120, 125);
+    font-weight: bold;
+    font-size: large;
+    border-radius: 100px;
+    height: 34px;
+    width: 115px;
+    color: rgb(48, 55, 34);
+}
+.top {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+button:hover {
+    background-color: rgb(118, 155, 127);
+    font-weight: bold;
+    font-size: large;
+    border-radius: 100px;
+    height: 34px;
+    width: 115px;
 }
